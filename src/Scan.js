@@ -1,54 +1,100 @@
-import React, { useCallback } from 'react';
-import { AppRegistry, StyleSheet, Text, TouchableOpacity, Linking } from 'react-native';
-import QRCodeScanner from 'react-native-qrcode-scanner';
-import { RNCamera } from 'react-native-camera';
+import { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, Button } from 'react-native';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 
-const Scan = () => {
-  const onSuccess = (code) => {
-    return alert(code)
+function Scan () {
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned, setScanned] = useState(false);
+
+  useEffect(() => {
+    const getBarCodeScannerPermissions = async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    };
+
+    getBarCodeScannerPermissions();
+  }, []);
+
+  const handleBarCodeScanned = ({ type, data }) => {
+    setScanned(true);
+　　　˚　　　　　　　　ﾟ　　　　　.
+　.⠀　　⠀‍⠀‍⠀‍⠀‍⠀‍⠀‍⠀‍⠀‍⠀‍⠀‍⠀,
+　　　*　　⠀.
+　　　　　.　　　　　　　　　　⠀✦
+    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+  };
+
+  if (hasPermission === null) {
+    return <Text>Requesting for camera permission</Text>;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
   }
 
   return (
-    <QRCodeScanner
-      onRead={onSuccess}
-      topContent={
-        <Text style={styles.centerText}>
-          Go to{' '}
-          <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on
-          your computer and scan the QR code.
-        </Text>
-      }
-      bottomContent={
-        <TouchableOpacity style={styles.buttonTouchable}>
-          <Text style={styles.buttonText}>OK. Got it!</Text>
-        </TouchableOpacity>
-      }
-    />
+    <View style={styles.container}>
+      <View style={styles.sideLeft}>
+      </View>
+      <View style={styles.sideRight}>
+      </View>
+      <View style={styles.column}>
+      </View>
+      <BarCodeScanner
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        style={StyleSheet.absoluteFillObject}
+      />
+      <View style={styles.bottomColumn}>
+        {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
+      </View>
+    
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  centerText: {
+  container: {
     flex: 1,
-    fontSize: 18,
-    padding: 32,
-    color: '#777'
+    flexDirection: 'column',
+    justifyContent: 'center',
+    zIndex: 100
   },
-  textBold: {
-    fontWeight: '500',
-    color: '#000'
+  column: {
+    display: "flex",
+    position: "absolute",
+    top: 0,
+    height: 350,
+    width: "100%",
+    backgroundColor: "white",
+    zIndex: 101
   },
-  buttonText: {
-    fontSize: 21,
-    color: 'rgb(0,122,255)'
+  bottomColumn:  {
+    display: "flex",
+    position: "absolute",
+    bottom: 0,
+    height: 350,
+    width: "100%",
+    backgroundColor: "white",
+    zIndex: 101
   },
-  buttonTouchable: {
-    padding: 16
+  sideLeft:  {
+    display: "flex",
+    position: "absolute",
+    left: 0,
+    height: "100%",
+    width: 30,
+    backgroundColor: "white",
+    zIndex: 101
+  },
+  sideRight:  {
+    display: "flex",
+    position: "absolute",
+    right: 0,
+    height: "100%",
+    width: 30,
+    backgroundColor: "white",
+    zIndex: 101
   }
 });
 
-
 export default Scan;
-
-
 

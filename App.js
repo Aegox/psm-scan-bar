@@ -1,44 +1,35 @@
 import { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import { Image, Text, View, StyleSheet, Button , TextInput } from 'react-native';
 
 export default function App() {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [scanned, setScanned] = useState(false);
-
-  useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
-    };
-
-    getBarCodeScannerPermissions();
-  }, []);
-
-  const handleBarCodeScanned = ({ type, data }) => {
-    setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-  };
-
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
 
   return (
     <View style={styles.container}>
-      <View style={styles.column}>
-      </View>
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={StyleSheet.absoluteFillObject}
-      />
-      <View style={styles.bottomColumn}>
-        {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
-      </View>
-    
+        <Image 
+          source={require('./assets/logo.png')} 
+          style={{width: 240, height: 200}}
+        />
+        <View style={styles.login}>
+          <Text style={styles.title}>Iniciar sesión</Text>
+          <View style={styles.items}>
+            <Text style={styles.label}>Correo</Text>
+            <TextInput style={styles.input}/>
+          </View>
+          <View style={styles.items}>
+            <Text style={styles.label}>Contraseña</Text>
+            <TextInput style={styles.input}/>
+          </View>
+          <Button style={styles.button} title="Iniciar sesión" color="orange" />
+          <Text style={styles.notAccount}>
+            No tienes cuenta?
+            <Text style={styles.suport}> Soporte</Text>
+          </Text>
+          <View style={styles.line}></View>
+          <Text style={styles.power}>
+            Powered by 
+          <Text style={styles.company}> Amun Services</Text>
+          </Text>
+       </View>
     </View>
   );
 }
@@ -47,26 +38,46 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
-    zIndex: 100
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingTop: 80,
   },
-  column: {
-    display: "flex",
-    position: "absolute",
-    top: 0,
-    height: 300,
-    width: "100%",
-    backgroundColor: "white",
-    zIndex: 101
+  login:{
+    flexDirection: "column",
+    gap: 15
   },
-  bottomColumn:  {
-    display: "flex",
-    position: "absolute",
-    bottom: 0,
-    height: 300,
+  title: {
+    fontFamily: "Monserrat",
+    fontSize: 24,
+    fontWeight: "Bold",
+    textAlign: "center"
+  },
+  label: {
+    fontSize: 18
+  },
+  input: {
+    backgroundColor: "#D3D3D3",
+    borderRadius: 20,
+    width: 288,
+    height: 46
+  },
+  items: {
+    gap: 5
+  },
+  power: {
+    textAlign: "center"
+  },
+  notAccount: {
+    textAlign: "center"
+  },
+  line: {
     width: "100%",
-    backgroundColor: "white",
-    zIndex: 101
+    height: 1,
+    backgroundColor: "#D3D3D3"
+  },
+  button: {
+    borderRadius: 20,
+    backgroundColor: "#FF7F50"
   }
 });
 
